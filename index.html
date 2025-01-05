@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Ulang Tahun</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        h1,
+        p {
+            margin: 0;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.5);
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            /* Ensure fireworks are always behind */
+        }
+
+        #cake-container {
+            display: none;
+            margin-top: 70px;
+            text-align: center;
+            position: relative;
+            /* Prevents overlap with canvas */
+            z-index: -1;
+            /* Ensure cake is above fireworks */
+        }
+
+        .container {
+            position: relative;
+        }
+
+        .bdayCake {
+            position: relative;
+            left: -100px;
+            top: 100px;
+        }
+
+        .plate {
+            position: absolute;
+            width: 242px;
+            height: 10px;
+            border-radius: 10px;
+            background-color: #2a9d8f;
+        }
+
+        .plate:before {
+            content: "";
+            position: absolute;
+            width: 195px;
+            height: 90px;
+            background-color: #9c6644;
+            top: -90px;
+            left: 25px;
+        }
+
+        .plate:after {
+            content: "";
+            position: absolute;
+            width: 195px;
+            left: 25px;
+            height: 10px;
+            background-color: #ffd166;
+            top: -60px;
+            box-shadow: 0px 25px #f4978e;
+        }
+
+        .cream {
+            position: absolute;
+            background-color: #f08080;
+            width: 195px;
+            height: 20px;
+            left: 25px;
+            top: -110px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .cream:before {
+            content: "";
+            position: absolute;
+            background-color: #f08080;
+            width: 195px;
+            height: 30px;
+            top: 0;
+            left: 0;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 0 0 0;
+        }
+
+
+        .cream:after {
+            position: absolute;
+            content: "";
+            background-color: rgba(0, 0, 0, 0.1);
+            width: 97.5px;
+            height: 110px;
+            left: 98px;
+            border-radius: 0 20px 0 0;
+        }
+
+        .candle {
+            position: absolute;
+            width: 10px;
+            height: 40px;
+            background: repeating-linear-gradient(#fae0e4, #fae0e4 5px, #ff0a54 5px, #ff0a54 10px);
+            box-shadow: inset -5px 0px rgba(0, 0, 0, 0.1);
+            top: -150px;
+            left: 118px;
+        }
+
+        .candle:before {
+            content: "";
+            position: absolute;
+            background-color: #333;
+            width: 2px;
+            height: 10px;
+            top: -10px;
+            left: 4px;
+        }
+
+        .candle:after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #fcca46;
+            border-radius: 80% 15% 55% 50% / 55% 15% 80% 50%;
+            box-shadow: inset -3px 3px #fe7f2d;
+            transform: rotate(-45deg);
+            top: -28px;
+            left: -5px;
+            opacity: 0.9;
+            animation: scale 0.5s ease-out infinite;
+        }
+
+        @keyframes scale {
+            0% {
+                transform: scaleY(1) rotate(-45deg);
+                opacity: 0.9;
+            }
+
+            50% {
+                transform: scaleY(0.9) rotate(-45deg);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scaleY(1) rotate(-45deg);
+                opacity: 0.9;
+            }
+        }
+
+        .flame {
+            position: absolute;
+        }
+
+        .flame:before {
+            content: "";
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.1);
+            height: 10px;
+            width: 118px;
+            border-radius: 0 10px 10px 0;
+            top: 0;
+            left: 123px;
+        }
+
+        .one {
+            position: absolute;
+            color: #fcca46;
+            font-size: 20px;
+            top: -160px;
+            left: 100px;
+            text-shadow: 33px -30px #fcca46;
+            animation: flash 0.5s ease infinite alternate;
+        }
+
+        .two {
+            position: absolute;
+            color: #fcca46;
+            font-size: 15px;
+            top: -180px;
+            left: 100px;
+            text-shadow: 35px 30px #fcca46;
+            animation: flash 0.8s ease infinite alternate;
+        }
+
+        .three {
+            position: absolute;
+            color: #fcca46;
+            font-size: 10px;
+            top: -195px;
+            left: 110px;
+            text-shadow: 30px 30px #fcca46;
+            animation: flash 0.4s ease infinite alternate;
+        }
+
+        @keyframes flash {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        #greeting {
+            opacity: 0;
+            transform: scale(0.5);
+            animation: fadeInScale 2s ease forwards;
+        }
+
+        @keyframes fadeInScale {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="fireworks"></canvas>
+    <p id="intro">Hai orang Jepang, apa kabar? Coba klik tombol di bawah.</p>
+    <button id="start">Klik Aku</button>
+    <h1 id="greeting" style="display: none;">Selamat Ulang Tahun Mbak Lia</h1>
+    <div id="cake-container">
+        <div class="container">
+            <div class="bdayCake">
+                <div class="plate"></div>
+                <div class="cream"></div>
+                <div class="candle"></div>
+                <div class="flame">
+                    <div class="one">+</div>
+                    <div class="two">+</div>
+                    <div class="three">+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="birthday-audio" src="katy_birthday.mp3"></audio>
+
+    <script>
+        const button = document.getElementById('start');
+        const intro = document.getElementById('intro');
+        const greeting = document.getElementById('greeting');
+        const cakeContainer = document.getElementById('cake-container');
+        const audio = document.getElementById('birthday-audio');
+
+        button.addEventListener('click', () => {
+            intro.style.display = 'none';
+            button.style.display = 'none';
+            greeting.style.display = 'block';
+            cakeContainer.style.display = 'block';
+            // Memulai audio
+            audio.play();
+            startFireworks();
+        });
+
+        const canvas = document.getElementById('fireworks');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const fireworks = [];
+
+        class Firework {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.radius = Math.random() * 3 + 1;
+                this.alpha = 1;
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 4,
+                    y: (Math.random() - 0.5) * 4,
+                };
+            }
+
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= 0.02;
+                if (this.alpha <= 0) {
+                    const index = fireworks.indexOf(this);
+                    if (index > -1) fireworks.splice(index, 1);
+                }
+            }
+        }
+
+
+        function createFirework() {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height / 2;
+            const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+
+            for (let i = 0; i < 50; i++) {
+                fireworks.push(new Firework(x, y, color));
+            }
+        }
+
+        function startFireworks() {
+            setInterval(createFirework, 500);
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            fireworks.forEach(firework => {
+                firework.update();
+                firework.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+
+</html>
